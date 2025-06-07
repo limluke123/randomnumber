@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎲 숫자  뽑기</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
+    body {
+      background: #f0f4f8;
+      font-family: 'Nanum Gothic', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      color: #333;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #1e90ff;
+      margin-bottom: 30px;
+      font-weight: 700;
+      text-shadow: 1px 1px 3px #a3c0ff;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    input[type=number] {
+      width: 100px;
+      padding: 8px 12px;
+      border: 2px solid #1e90ff;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    input[type=number]:focus {
+      border-color: #005bbb;
+      box-shadow: 0 0 5px #005bbb66;
+    }
+
+    input[type=checkbox] {
+      transform: scale(1.3);
+      margin-right: 8px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 25px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px #1e90ffaa;
+      transition: background-color 0.3s ease;
+      font-weight: 700;
+    }
+    button:hover {
+      background-color: #005bbb;
+      box-shadow: 0 6px 12px #004080cc;
+    }
+
+    /* "결과:" 제목과 결과 박스 사이 간격 조정 */
+    h2 {
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    #result {
+      margin-top: 0;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #004080;
+      background: #dbe9ff;
+      border-radius: 12px;
+      padding: 20px 30px;
+      min-width: 240px;
+      box-shadow: 0 0 10px #a3c0ff88 inset;
+      user-select: text;
+      word-break: break-word;
+    }
+
+    section.intro {
+      max-width: 600px;
+      margin: 30px auto 40px;
+      font-size: 1.1rem;
+      color: #444;
+      background: #ffffffdd;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px #a3c0ff55;
+      line-height: 1.6;
+    }
+    section.intro h2 {
+      margin-top: 0;
+      color: #1e90ff;
+    }
+    section.intro ul {
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 30px 15px;
+      }
+      input[type=number] {
+        width: 80px;
+        font-size: 0.9rem;
+      }
+      button {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 12px 0;
+      }
+      #result {
+        font-size: 1.6rem;
+        min-width: auto;
+      }
+      section.intro {
+        margin: 20px 0 30px;
+        padding: 15px 20px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 숫자 뽑기 사이트</h1>
+
+  <section class="intro">
+    <h2>사이트 소개</h2>
+    <p>이 사이트는 쉽게 원하는 개수만큼 랜덤 숫자를 뽑아주는 간단한 도구입니다.</p>
+    <p>수학 공부, 게임, 이벤트, 추첨 등 다양하게 활용해 보세요!</p>
+
+    <h3>이용 방법</h3>
+    <ul>
+      <li>최소 숫자와 최대 숫자를 설정하세요.</li>
+      <li>몇 개를 뽑을지 입력하고, 중복 허용 여부를 선택하세요.</li>
+      <li>‘숫자 뽑기!’ 버튼을 누르면 결과가 나옵니다.</li>
+    </ul>
+  </section>
+
+  <label for="min">최소 숫자:</label>
+  <input id="min" type="number" value="1" />
+
+  <label for="max">최대 숫자:</label>
+  <input id="max" type="number" value="100" />
+
+  <label for="count">몇 개 뽑을까요?</label>
+  <input id="count" type="number" value="3" min="1" />
+
+  <label><input type="checkbox" id="allowDuplicates" />중복 허용</label>
+
+  <button onclick="drawNumbers()">숫자 뽑기!</button>
+
+  <h2>결과:</h2>
+  <div id="result">여기에 결과가 나옵니다!</div>
+
+  <script>
+    function drawNumbers() {
+      const min = parseInt(document.getElementById('min').value);
+      const max = parseInt(document.getElementById('max').value);
+      const count = parseInt(document.getElementById('count').value);
+      const allowDuplicates = document.getElementById('allowDuplicates').checked;
+
+      if (min > max) {
+        alert('최소 숫자가 최대 숫자보다 클 수 없어요!');
+        return;
+      }
+
+      const rangeSize = max - min + 1;
+      if (!allowDuplicates && count > rangeSize) {
+        alert('중복 없이 뽑으려면 최대 숫자 범위보다 뽑는 개수가 작아야 해요!');
+        return;
+      }
+
+      const result = [];
+      while (result.length < count) {
+        const num = Math.floor(Math.random() * rangeSize) + min;
+        if (allowDuplicates || !result.includes(num)) {
+          result.push(num);
+        }
+      }
+
+      document.getElementById('result').innerText = result.join(', ');
+    }
+  </script>
+</body>
+</html>
